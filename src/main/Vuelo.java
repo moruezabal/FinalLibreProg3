@@ -6,29 +6,29 @@ public class Vuelo {
 	
 	private ArrayList<String> aerolineas;
 	private ArrayList<String> aeropuertos;
-	private int escalas;
-	private int kilometros;
+	private int cantEscalas;
+	private double kilometros;
 	
 	public Vuelo(){
-		aerolineas = new ArrayList<String>();
-		aeropuertos = new ArrayList<String>();
-		escalas = 0;
-		kilometros = 0;	
+		this.aerolineas = new ArrayList<String>();
+		this.aeropuertos = new ArrayList<String>();
+		this.cantEscalas = 0;
+		this.kilometros = 0;
 	}
 
-	public int getEscalas() {
-		return escalas;
+	public int getCantEscalas() {
+		return cantEscalas;
 	}
 
-	public void setEscalas(int escalas) {
-		this.escalas = escalas;
+	public void setCantEscalas(int escalas) {
+		this.cantEscalas = escalas;
 	}
 
-	public int getKilometros() {
+	public double getKilometros() {
 		return kilometros;
 	}
 
-	public void setKilometros(int kilometros) {
+	public void setKilometros(double kilometros) {
 		this.kilometros = kilometros;
 	}
 
@@ -39,30 +39,21 @@ public class Vuelo {
 	public ArrayList<String> getAeropuertos() {
 		return aeropuertos;
 	}
-	
+
 	public void addAerolinea (String a) {
 		aerolineas.add(a);
 	}
 	
-	public void addAeropuertos (String a) {
+	public void addAeropuerto (String a) {
 		aeropuertos.add(a);
-	}
-	
-	public void registrarEscala(String aeropuerto, String aerolinea) {
-		this.addAeropuertos(aerolinea);
-		this.addAerolinea(aerolinea);
-		this.aumentarCantEscala();
-	}
-
-	private void aumentarCantEscala() {
-		this.escalas++;
 	}
 
 	@Override
 	public String toString() {
-		return "Vuelo [aeropuertos: " + aeropuertos
-					+ ", aerolineas: " + aerolineas
-					+ ", escalas: " + escalas
-					+ ", kilometros: " + kilometros + "]";
+		return "Vuelo [\n 	Aeropuertos: " + aeropuertos
+					+ "\n 	Aerolineas: " + aerolineas
+					+ "\n 	Escalas: " + cantEscalas
+					+ "\n	Kilometros: " + (int) kilometros 
+					+ "\n      ]";
 	}
 }

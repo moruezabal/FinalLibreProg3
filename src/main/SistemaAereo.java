@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SistemaAereo {
 
@@ -152,7 +153,7 @@ public class SistemaAereo {
 		  		+ "1- Listar todos los aeropuertos\n"
 		  		+ "2- Listar todas las reservas realizadas\n"
 		  		+ "3- Verificar vuelo directo\n"
-		  		+ "4- Obtener vuelos sin aerolinea\n"
+		  		+ "4- Obtener vuelos sin una aerolinea determinada\n"
 		  		+ "5- Vuelos disponibles\n");
 		  
 		  try {
@@ -173,11 +174,13 @@ public class SistemaAereo {
 				return this.mostrarReservas();
 			case "3":
 				return this.mostrarVueloDirecto();
+			case "4":
+				return this.mostrarVuelosSinAerolinea();
 			default:
 				return "Opcion incorrecta: " + opcion;
 			}
 	}
-
+	
 	private String mostrarVueloDirecto() {
 		
 		Aeropuerto origen = this.conseguirAeropuertoSolicitado("Ingresar aeropuerto de origen:");
@@ -186,14 +189,7 @@ public class SistemaAereo {
 			
 			Ruta r = origen.getVueloDirecto(destino.getNombre());
 			if (r != null) {
-				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-				System.out.println("Ingresar aerolinea");
-				
-				try {
-					aerolinea = br.readLine();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				aerolinea = solicitarAerolinea();
 				
 				if(r.existeAerolinea(aerolinea)) { // Valida si la Aerolínea opera en la ruta, no valida si existe la aerolínea
 					if(r.hayPasaje(aerolinea)) {
@@ -210,6 +206,24 @@ public class SistemaAereo {
 			else
 				return "No existe vuelo directo entre los aeropuertos mencionados";
 	}
+	
+	private String mostrarVuelosSinAerolinea() {
+		
+		String informe = "";
+		
+		Aeropuerto origen = this.conseguirAeropuertoSolicitado("Ingresar aeropuerto de origen:");
+		Aeropuerto destino = this.conseguirAeropuertoSolicitado("Ingresar Aeropuerto de destino:");
+		String aerolinea = solicitarAerolinea();
+		
+		ArrayList<Vuelo> vuelos = encontrarVuelosSinAerolinea(origen, destino, aerolinea);
+		
+		informe += "Cantidad de vuelos: " + vuelos.size() + "\n";
+		for (Vuelo vuelo : vuelos) {
+			informe += vuelo +"\n--------------\n";	
+		}
+		return informe;
+	}
+
 
 	private Aeropuerto conseguirAeropuertoSolicitado(String mensaje) {
 		
@@ -231,6 +245,21 @@ public class SistemaAereo {
 		return a;
 	}
 	
+	private String solicitarAerolinea() {
+		String aerolinea = "";
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println("Ingresar aerolinea");
+		
+		try {
+			aerolinea = br.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return aerolinea;
+	}
+	
 	public Ruta getRuta(Aeropuerto origen, Aeropuerto destino) {
 		Ruta salida = null;
 		
@@ -240,15 +269,6 @@ public class SistemaAereo {
 		}
 		return salida;
 	}
-	
-	
-//	  private ArrayList<Aeropuerto> encontrarCamino(){
-//	  
-//	  }
-//	  
-//	  private ArrayList<HashMap<Aeropuerto, Ruta>> todosLosCaminos (Aeropuerto origen, Aeropuerto Destino){
-//	  
-//	  }
 	  
 	  private boolean hayRutaDisponible(HashMap<String, Boolean> visitado, Aeropuerto origen, Aeropuerto destino) { //chequeandoPasajes
 		  boolean encontrado = false;
@@ -299,37 +319,51 @@ public class SistemaAereo {
 			  System.out.println(a.getFullName());
 	  }
 	  
-	  private ArrayList<ArrayList<Aeropuerto>> encontrarCaminosSinAerolinea(HashMap<String, Boolean> visitado, Aeropuerto origen, Aeropuerto destino, String aerolineaExcluida) { //chequeandoPasajes
-		  ArrayList<ArrayList<Aeropuerto>> vuelos = new ArrayList<ArrayList<Aeropuerto>>();
+	  private ArrayList<Vuelo> encontrarVuelosSinAerolinea(HashMap<String, Boolean> visitado, Aeropuerto origen, Aeropuerto destino, String aerolineaExcluida) { //chequeandoPasajes
+		  ArrayList<Vuelo> vuelos = new ArrayList<Vuelo>();
 		  
 		  visitado.put(origen.getNombre(), true); // podría ser un arreglo de nombres?
 		  
 		  if (origen.getNombre().equals(destino.getNombre())) {
-			  ArrayList<Aeropuerto> vueloUnico = new ArrayList<Aeropuerto>();
-			  vueloUnico.add(origen);
+			  Vuelo vueloUnico = new Vuelo();
+			  vueloUnico.addAeropuerto(origen.getNombre());
+			  vueloUnico.setCantEscalas(1);
 			  vuelos.add(vueloUnico);
 			  visitado.remove(origen.getNombre());
 			  return vuelos;
 		  }
-		  else
-			  for (Aeropuerto siguiente : origen.getDestinosDirectosPosibles(aerolineaExcluida)) {		  
-				  if(visitado.get(siguiente.getNombre()) == null ) {
-					  ArrayList<ArrayList<Aeropuerto>> caminos = encontrarCaminosSinAerolinea(visitado, siguiente, destino, aerolineaExcluida);	
-					  for(ArrayList<Aeropuerto> camino : caminos) {
-						  if (!camino.isEmpty()) {
-							  ArrayList<Aeropuerto> caminoCompleto = new ArrayList<Aeropuerto>();
-							  caminoCompleto.add(origen);
-							  caminoCompleto.addAll(camino);
+		  else {
+			  HashMap<Aeropuerto,String> destinosPosibles = origen.getDestinosDirectosPosiblesConAerolinea(aerolineaExcluida);
+			  for (Map.Entry<Aeropuerto, String> siguiente : destinosPosibles.entrySet()) {		  
+				  if(visitado.get(siguiente.getKey().getNombre()) == null ) {
+					  ArrayList<Vuelo> caminos = encontrarVuelosSinAerolinea(visitado, siguiente.getKey(), destino, aerolineaExcluida);	
+					  for(Vuelo camino : caminos) {
+						  if (!camino.getAeropuertos().isEmpty()) {
+							  Vuelo caminoCompleto = new Vuelo();
+							  // Actualizar listado de aeropuertos
+							  caminoCompleto.addAeropuerto(origen.getNombre());
+							  caminoCompleto.getAeropuertos().addAll(camino.getAeropuertos());
+							  // Actualizar listado de aerolíneas
+							  caminoCompleto.addAerolinea(siguiente.getValue());
+							  caminoCompleto.getAerolineas().addAll(camino.getAerolineas());
+							  // Actualizar cantidad de escalas
+							  caminoCompleto.setCantEscalas(camino.getCantEscalas()+1);
+							  // Actualizar kilometraje
+							  Ruta rutaActual = origen.getVueloDirecto(siguiente.getKey().getNombre());
+							  caminoCompleto.setKilometros(camino.getKilometros()+ rutaActual.getDistancia());
+							  // Agregar vuelo al listado
 							  vuelos.add(caminoCompleto);
 						  }  
 					  }  
 				  }
-			  }
-		  	visitado.remove(origen.getNombre());
-		  	return vuelos;
+			  } 
+		  }
+			  
+	  	visitado.remove(origen.getNombre());
+	  	return vuelos;
 	  }
 	  
-	  public ArrayList<ArrayList<Aeropuerto>> encontrarCaminosSinAerolinea(Aeropuerto origen, Aeropuerto destino, String aerolineaExcluida){
-		  return encontrarCaminosSinAerolinea(new HashMap<String, Boolean>(), origen, destino, aerolineaExcluida);
+	  public ArrayList<Vuelo> encontrarVuelosSinAerolinea(Aeropuerto origen, Aeropuerto destino, String aerolineaExcluida){
+		  return encontrarVuelosSinAerolinea(new HashMap<String, Boolean>(), origen, destino, aerolineaExcluida);
 	  }
 }

@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Aeropuerto {
 	
@@ -114,6 +115,17 @@ public class Aeropuerto {
 			for (Ruta r: this.getSalidas()){
 				if(r.hayPasajeSinAerolinea(excluida)){
 					destinos.add(r.getDestino());					
+				}
+			}
+		return destinos;
+	}
+	
+	public HashMap<Aeropuerto, String> getDestinosDirectosPosiblesConAerolinea(String excluida){
+		 HashMap<Aeropuerto, String> destinos  = new HashMap<Aeropuerto, String>();
+			for (Ruta r: this.getSalidas()){
+				String siguienteAerolinea = r.PasajeSinAerolinea(excluida);
+				if(siguienteAerolinea != null){ //Si, el nombre de la función es horrible
+					destinos.put(r.getDestino(), siguienteAerolinea);					
 				}
 			}
 		return destinos;

@@ -83,6 +83,16 @@ public class Ruta {
 		return hayPasajes;
 	}
 	
+	public String PasajeSinAerolinea(String aerolineaExcluida) {
+		String aerolineaElegida = null;
+		for( Map.Entry<String, Integer> entry : capacidad.entrySet()) {
+			if(!entry.getKey().equals(aerolineaExcluida) && entry.getValue() > 0) {
+				aerolineaElegida = entry.getKey();
+			} 
+		}
+		return aerolineaElegida;
+	}
+	
 	@Override
 	public String toString() {
 		return "Ruta [destino=" + destino.getFullName() + ", distancia=" + distancia + ", esCabotaje=" + esCabotaje + ", capacidad="
