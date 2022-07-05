@@ -154,7 +154,7 @@ public class SistemaAereo {
 		  		+ "2- Listar todas las reservas realizadas\n"
 		  		+ "3- Verificar vuelo directo\n"
 		  		+ "4- Obtener vuelos sin una aerolinea determinada\n"
-		  		+ "5- Vuelos disponibles\n");
+		  		+ "5- Vuelos disponibles entre paises\n");
 		  
 		  try {
 			opcion = br.readLine();
@@ -176,11 +176,21 @@ public class SistemaAereo {
 				return this.mostrarVueloDirecto();
 			case "4":
 				return this.mostrarVuelosSinAerolinea();
+			case "5":
+				return this.mostrarVuelosDirectosEntrePaises();
 			default:
 				return "Opcion incorrecta: " + opcion;
 			}
 	}
 	
+	private String mostrarVuelosDirectosEntrePaises() {
+
+		String paisOrigen = solicitarTexto("Ingresar pais de partida");
+		String paisDestino = solicitarTexto("Ingresar pais de destino");
+		
+		return vuelosDirectosSegunPaises(paisOrigen, paisDestino);
+	}
+
 	private String mostrarVueloDirecto() {
 		
 		Aeropuerto origen = this.conseguirAeropuertoSolicitado("Ingresar aeropuerto de origen:");
@@ -189,7 +199,7 @@ public class SistemaAereo {
 			
 			Ruta r = origen.getVueloDirecto(destino.getNombre());
 			if (r != null) {
-				aerolinea = solicitarAerolinea();
+				aerolinea = solicitarTexto("Ingresar aerolinea");
 				
 				if(r.existeAerolinea(aerolinea)) { // Valida si la Aerolínea opera en la ruta, no valida si existe la aerolínea
 					if(r.hayPasaje(aerolinea)) {
@@ -213,7 +223,7 @@ public class SistemaAereo {
 		
 		Aeropuerto origen = this.conseguirAeropuertoSolicitado("Ingresar aeropuerto de origen:");
 		Aeropuerto destino = this.conseguirAeropuertoSolicitado("Ingresar Aeropuerto de destino:");
-		String aerolinea = solicitarAerolinea();
+		String aerolinea = solicitarTexto("Ingresar aerolinea");
 		
 		ArrayList<Vuelo> vuelos = encontrarVuelosSinAerolinea(origen, destino, aerolinea);
 		
@@ -245,11 +255,11 @@ public class SistemaAereo {
 		return a;
 	}
 	
-	private String solicitarAerolinea() {
+	private String solicitarTexto(String mensaje) {
 		String aerolinea = "";
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("Ingresar aerolinea");
+		System.out.println(mensaje);
 		
 		try {
 			aerolinea = br.readLine();
@@ -366,4 +376,24 @@ public class SistemaAereo {
 	  public ArrayList<Vuelo> encontrarVuelosSinAerolinea(Aeropuerto origen, Aeropuerto destino, String aerolineaExcluida){
 		  return encontrarVuelosSinAerolinea(new HashMap<String, Boolean>(), origen, destino, aerolineaExcluida);
 	  }
+	  
+	  public String vuelosDirectosSegunPaises(String paisOrigen, String paisDestino){
+		 String informeVuelos = "";
+		
+		  for (Aeropuerto a : this.getAeropuertos()) {
+			  if (a.getPais().equals(paisOrigen)){
+				  for (Ruta r: a.getSalidas()) {
+					  if(r.getDestino().getPais().equals(paisDestino)){
+							informeVuelos += this.mostrarRuta(a,r);
+						}  
+				  }
+			  }  
+		  }
+		  return informeVuelos.length() > 0 ? informeVuelos : "No hay vuelos disponibles entre los dos paises";
+	  }
+
+	private String mostrarRuta(Aeropuerto a, Ruta r) {
+		return a.getFullName() + " a " + r.getDestino().getFullName() + ":\n" +
+			"Por " + r.imprimirAerolineasDisponibles() + ".\nDistancia: " + r.getDistancia() + " Kms.\n\n";
+	}
 }

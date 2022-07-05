@@ -98,4 +98,13 @@ public class Ruta {
 		return "Ruta [destino=" + destino.getFullName() + ", distancia=" + distancia + ", esCabotaje=" + esCabotaje + ", capacidad="
 				+ capacidad + "]\n";
 	}
+
+	public String imprimirAerolineasDisponibles() {
+		String aerolineas = "";
+		for( Map.Entry<String, Integer> entry : capacidad.entrySet()) {
+			if(entry.getValue() > 0)
+			aerolineas += entry + ", ";
+		}
+		return aerolineas.substring(0, aerolineas.length() - 2);
+	}
 }

@@ -29,6 +29,8 @@ public class Main {
 //		Aeropuerto destino = sa.getAeropuertoByName("Ministro Pistarini");
 //		String aerolinea = "United Airlines";
 		
+		//System.out.println(sa.vuelosDirectosSegunPaises("USA", "ARG"));
+		
 		System.out.println(sa.iniciarMenu());
 	}
 
