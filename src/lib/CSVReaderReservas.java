@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class CSVReaderReservas {
 
-    public static ArrayList<String[]> read() {
-        String csvFile = "./src/resources/Reservas.csv";
+    public static ArrayList<String[]> read(String path) {
+        String csvFile = path;
         String line = "";
         String cvsSplitBy = ",";
         String csvSplitField = ";";

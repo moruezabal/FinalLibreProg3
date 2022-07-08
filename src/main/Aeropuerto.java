@@ -120,6 +120,16 @@ public class Aeropuerto {
 		return destinos;
 	}
 	
+	public ArrayList<Ruta> getRutasPosibles(ArrayList<Aeropuerto> prohibidos){
+		ArrayList<Ruta> destinos = new ArrayList<>();
+			for (Ruta r: this.getSalidas()){
+				if(!prohibidos.contains(r.getDestino())){
+					destinos.add(r);					
+				}
+			}
+		return destinos;
+	}
+	
 	public HashMap<Aeropuerto, String> getDestinosDirectosPosiblesConAerolinea(String excluida){
 		 HashMap<Aeropuerto, String> destinos  = new HashMap<Aeropuerto, String>();
 			for (Ruta r: this.getSalidas()){

@@ -154,7 +154,8 @@ public class SistemaAereo {
 		  		+ "2- Listar todas las reservas realizadas\n"
 		  		+ "3- Verificar vuelo directo\n"
 		  		+ "4- Obtener vuelos sin una aerolinea determinada\n"
-		  		+ "5- Vuelos disponibles entre paises\n");
+		  		+ "5- Vuelos disponibles entre paises\n"
+		  		+ "6- Recorrer Aeropuertos en menor distancia - Greedy");
 		  
 		  try {
 			opcion = br.readLine();
@@ -178,11 +179,22 @@ public class SistemaAereo {
 				return this.mostrarVuelosSinAerolinea();
 			case "5":
 				return this.mostrarVuelosDirectosEntrePaises();
+			case "6":
+				return this.mostrarGreedy();
 			default:
 				return "Opcion incorrecta: " + opcion;
 			}
 	}
 	
+	private String mostrarGreedy() {
+		
+		Aeropuerto origen = this.conseguirAeropuertoSolicitado("Ingresar aeropuerto de origen:");
+		ArrayList<Aeropuerto> recorrido = this.recorridoMasCortoGreedy(origen);
+		return recorrido.size() > this.cantAeropuertos() ? 
+				"Todos los aeropuertos recorridos" :
+				"Aeropuertos recorridos: " + recorrido.size() + "/" + this.cantAeropuertos() + "\n";
+	}
+
 	private String mostrarVuelosDirectosEntrePaises() {
 
 		String paisOrigen = solicitarTexto("Ingresar pais de partida");
@@ -396,4 +408,62 @@ public class SistemaAereo {
 		return a.getFullName() + " a " + r.getDestino().getFullName() + ":\n" +
 			"Por " + r.imprimirAerolineasDisponibles() + ".\nDistancia: " + r.getDistancia() + " Kms.\n\n";
 	}
+	
+	public ArrayList<Aeropuerto> recorridoMasCortoGreedy(Aeropuerto origen){
+		
+		ArrayList<Ruta> candidatos = origen.getSalidas(); //Listado de candidatos -> Rutas posibles para el nuevo destino
+		
+		ArrayList<Aeropuerto> visitados = new ArrayList<>();
+		
+		visitados.add(origen);
+		
+		System.out.println(origen.getFullName());
+		
+		Aeropuerto candSeleccionado = null; //Aeropuerto destino de la ruta elegida
+		
+		while(candidatos.size() > 0 && visitados.size() <= this.cantAeropuertos()) {
+			
+			candSeleccionado = seleccionarMasCercano(candidatos, visitados); 
+			System.out.println(candSeleccionado.getFullName());
+			
+			visitados.add(candSeleccionado);
+			candidatos = candSeleccionado.getRutasPosibles(visitados);
+			
+		}
+		
+		if(visitados.size() == this.cantAeropuertos()) {
+			Ruta regresoOrigen = candSeleccionado.getVueloDirecto(origen.getNombre());
+			if(regresoOrigen != null) {
+				System.out.println("Recorrido completado y regreso a origen");
+				System.out.println(origen.getFullName());
+				
+				visitados.add(origen);
+				return visitados;
+			}
+			else{
+				System.out.println("Recorrido completado, pero no ha llegado a origen");
+				return visitados;
+			}
+		}
+		else {
+			System.out.println("No ha recorrido todos los aeropuertos");
+			return visitados;
+		}
+	}
+
+	private Aeropuerto seleccionarMasCercano(ArrayList<Ruta> destinos, ArrayList<Aeropuerto> visitados) {
+		Aeropuerto elegido = null;
+		
+		double distanciaMenor = Double.MAX_VALUE;
+		
+		for( Ruta destino : destinos) {
+			if(!visitados.contains(destino.getDestino()) && destino.getDistancia() < distanciaMenor) {
+				distanciaMenor = destino.getDistancia();
+				elegido = destino.getDestino();
+			}
+		}
+		
+		return elegido;
+	}
+		
 }
