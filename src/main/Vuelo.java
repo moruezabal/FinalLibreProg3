@@ -9,6 +9,9 @@ public class Vuelo {
 	private int cantEscalas;
 	private double kilometros;
 	
+	//Solución
+	
+	
 	public Vuelo(){
 		this.aerolineas = new ArrayList<String>();
 		this.aeropuertos = new ArrayList<String>();

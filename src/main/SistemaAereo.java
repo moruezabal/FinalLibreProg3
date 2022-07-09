@@ -155,7 +155,8 @@ public class SistemaAereo {
 		  		+ "3- Verificar vuelo directo\n"
 		  		+ "4- Obtener vuelos sin una aerolinea determinada\n"
 		  		+ "5- Vuelos disponibles entre paises\n"
-		  		+ "6- Recorrer Aeropuertos en menor distancia - Greedy");
+		  		+ "6- Recorrer Aeropuertos en menor distancia - Greedy\n"
+		  		+ "7- Recorrer Aeropuertos en menor distancia - Backtracing\n");
 		  
 		  try {
 			opcion = br.readLine();
@@ -181,11 +182,17 @@ public class SistemaAereo {
 				return this.mostrarVuelosDirectosEntrePaises();
 			case "6":
 				return this.mostrarGreedy();
+			case "7":
+				return this.mostrarBacktracking();
 			default:
 				return "Opcion incorrecta: " + opcion;
 			}
 	}
 	
+	private String mostrarBacktracking() {
+		return "Backtracking";
+	}
+
 	private String mostrarGreedy() {
 		
 		Aeropuerto origen = this.conseguirAeropuertoSolicitado("Ingresar aeropuerto de origen:");
@@ -450,6 +457,50 @@ public class SistemaAereo {
 			return visitados;
 		}
 	}
+	
+	private Vuelo recorridoMasCortoBacktracking(Estado e) {
+		
+		Vuelo vuelo = new Vuelo();
+		  
+		 e.addVisita(e.getActual());
+		  
+		  if (e.actualNoTieneDestinos() || e.cantVisitados() == this.cantAeropuertos()) {
+			  if(e.cantVisitados() == this.cantAeropuertos()) {
+				  e.getSolucion().addAeropuerto(e.getActual().getNombre());
+			  }
+			  e.setVisitado(new ArrayList<Aeropuerto>());
+			  return e.getSolucion();
+		  }
+		  else {
+//			  HashMap<Aeropuerto,String> destinosPosibles = origen.getDestinosDirectosPosiblesConAerolinea(aerolineaExcluida);
+//			  for (Map.Entry<Aeropuerto, String> siguiente : destinosPosibles.entrySet()) {		  
+//				  if(visitado.get(siguiente.getKey().getNombre()) == null ) {
+//					  ArrayList<Vuelo> caminos = encontrarVuelosSinAerolinea(visitado, siguiente.getKey(), destino, aerolineaExcluida);	
+//					  for(Vuelo camino : caminos) {
+//						  if (!camino.getAeropuertos().isEmpty()) {
+//							  Vuelo caminoCompleto = new Vuelo();
+//							  // Actualizar listado de aeropuertos
+//							  caminoCompleto.addAeropuerto(origen.getNombre());
+//							  caminoCompleto.getAeropuertos().addAll(camino.getAeropuertos());
+//							  // Actualizar listado de aerolíneas
+//							  caminoCompleto.addAerolinea(siguiente.getValue());
+//							  caminoCompleto.getAerolineas().addAll(camino.getAerolineas());
+//							  // Actualizar cantidad de escalas
+//							  caminoCompleto.setCantEscalas(camino.getCantEscalas()+1);
+//							  // Actualizar kilometraje
+//							  Ruta rutaActual = origen.getVueloDirecto(siguiente.getKey().getNombre());
+//							  caminoCompleto.setKilometros(camino.getKilometros()+ rutaActual.getDistancia());
+//							  // Agregar vuelo al listado
+//							  vuelos.add(caminoCompleto);
+//						  }  
+//					  }  
+//				  }
+//			  } 
+		  }
+			  
+	  	//visitado.remove(origen.getNombre());
+	  	return vuelo;
+	  }
 
 	private Aeropuerto seleccionarMasCercano(ArrayList<Ruta> destinos, ArrayList<Aeropuerto> visitados) {
 		Aeropuerto elegido = null;
