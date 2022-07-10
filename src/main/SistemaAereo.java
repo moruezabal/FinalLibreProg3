@@ -190,7 +190,11 @@ public class SistemaAereo {
 	}
 	
 	private String mostrarBacktracking() {
-		return "Backtracking";
+		Aeropuerto origen = this.conseguirAeropuertoSolicitado("Ingresar aeropuerto de origen:");
+		Vuelo recorrido = this.recorridoMasCortoBacktracking(origen);
+		return recorrido != null ?
+				"Recorrido: " + recorrido :
+				"No se pudo recorrer todos los aeropuertos de un solo viaje";
 	}
 
 	private String mostrarGreedy() {
@@ -464,7 +468,6 @@ public class SistemaAereo {
 		  
 		if(e.cantVisitados() == this.cantAeropuertos()) {
 			e.aumentarCantSoluciones();
-			System.out.println(e.getSolucion().getAeropuertos());
 			
 			Ruta regresoOrigen = e.getActual().getVueloDirecto(e.getOrigen().getNombre());
 			if(regresoOrigen != null) {
@@ -477,7 +480,7 @@ public class SistemaAereo {
 				}
 				
 				e.getSolucion().restarKilometros(regresoOrigen.getDistancia());
-				e.getSolucion().removeAeropuerto(e.getOrigen().getNombre());
+				e.getSolucion().removeLastAeropuerto();
 			}
 			
 		}
@@ -485,7 +488,8 @@ public class SistemaAereo {
 			Aeropuerto actual = e.getActual();
 			ArrayList<Ruta> rutasPosibles = e.getActual().getRutasPosibles(e.getVisitados());
 			for( Ruta r: rutasPosibles) {
-				Aeropuerto siguiente = r.getDestino();
+				Aeropuerto siguiente = r.getDestino(); //Guardo referencia para restarla de las visitas luego. Se podría haber suprimido por índice para evitar esto.
+				
 				e.addVisita(siguiente);
 				e.setActual(siguiente);
 				e.getSolucion().addAeropuerto(siguiente.getNombre());
@@ -497,7 +501,7 @@ public class SistemaAereo {
 				
 				e.removeVisita(siguiente);
 				e.setActual(actual);
-				e.getSolucion().removeAeropuerto(siguiente.getNombre());
+				e.getSolucion().removeLastAeropuerto();
 				e.getSolucion().restarKilometros(r.getDistancia());
 			}
 		  }

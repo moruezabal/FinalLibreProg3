@@ -19,27 +19,7 @@ public class Main {
 		sa.cargarAeropuertosCSV(aeropuertosImportados);
 	
 		sa.cargarRutasCSV(rutasImportadas);
-		//sa.cargarReservasCSV(reservasImportadas);
-		
-		//System.out.println(sa.mostrarReservas());
-		System.out.println(sa.mostrarRutas());
-		//System.out.println("Aeropuertos: " + sa.cantAeropuertos() 
-		//				+ "\nReservas: " + sa.cantReservas());
-		
-		Aeropuerto origen  = sa.getAeropuertoByName("Campinas");
-		
-		System.out.println(sa.recorridoMasCortoBacktracking(origen));
-		
-		
-//		Aeropuerto destino = sa.getAeropuertoByName("Ministro Pistarini");
-//		String aerolinea = "United Airlines";
-		
-		
-		//sa.recorridoMasCortoGreedy(origen);
-		
-		//System.out.println(sa.mostrarRutas());
-		
-		//System.out.println(sa.vuelosDirectosSegunPaises("USA", "ARG"));
+		sa.cargarReservasCSV(reservasImportadas);
 		
 		System.out.println(sa.iniciarMenu());
 	}

@@ -72,8 +72,8 @@ public class Vuelo {
 		aeropuertos.add(a);
 	}
 	
-	public void removeAeropuerto(String s) {
-		aeropuertos.remove(s);
+	public void removeLastAeropuerto() {
+		aeropuertos.remove(aeropuertos.size()-1);
 	}
 
 	@Override
