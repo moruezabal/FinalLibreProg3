@@ -105,6 +105,6 @@ public class Ruta {
 			if(entry.getValue() > 0)
 			aerolineas += entry + ", ";
 		}
-		return aerolineas.substring(0, aerolineas.length() - 2);
+		return aerolineas.length() > 0 ? "Por: " + aerolineas.substring(0, aerolineas.length() - 2) : "Sin vuelos disponibles";
 	}
 }

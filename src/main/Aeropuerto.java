@@ -140,8 +140,8 @@ public class Aeropuerto {
 	public HashMap<Aeropuerto, String> getDestinosDirectosPosiblesConAerolinea(String excluida){
 		 HashMap<Aeropuerto, String> destinos  = new HashMap<Aeropuerto, String>();
 			for (Ruta r: this.getSalidas()){
-				String siguienteAerolinea = r.PasajeSinAerolinea(excluida);
-				if(siguienteAerolinea != null){ //Si, el nombre de la función es horrible
+				String siguienteAerolinea = r.PasajeSinAerolinea(excluida); //Si, el nombre de la función es horrible
+				if(siguienteAerolinea != null){ 
 					destinos.put(r.getDestino(), siguienteAerolinea);					
 				}
 			}

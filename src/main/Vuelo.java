@@ -24,7 +24,7 @@ public class Vuelo {
 		this.aeropuertos.add(origen.getNombre());
 	}
 	
-	public Vuelo(Vuelo v) {
+	public Vuelo(Vuelo v) { //Clonar objeto
 		this.aerolineas = new ArrayList<String>(v.getAerolineas());
 		this.aeropuertos = new ArrayList<String>(v.getAeropuertos());
 		this.cantEscalas = v.getCantEscalas();
