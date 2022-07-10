@@ -17,15 +17,18 @@ public class Main {
 		ArrayList<String[]> reservasImportadas = CSVReaderReservas.read("./src/resources/Reservas.csv");
 		
 		sa.cargarAeropuertosCSV(aeropuertosImportados);
+	
 		sa.cargarRutasCSV(rutasImportadas);
-		sa.cargarReservasCSV(reservasImportadas);
+		//sa.cargarReservasCSV(reservasImportadas);
 		
 		//System.out.println(sa.mostrarReservas());
-		//System.out.println(sa.mostrarRutas());
+		System.out.println(sa.mostrarRutas());
 		//System.out.println("Aeropuertos: " + sa.cantAeropuertos() 
 		//				+ "\nReservas: " + sa.cantReservas());
 		
-		//Aeropuerto origen  = sa.getAeropuertoByName("Tancredo Neves");
+		Aeropuerto origen  = sa.getAeropuertoByName("Campinas");
+		
+		System.out.println(sa.recorridoMasCortoBacktracking(origen));
 		
 		
 //		Aeropuerto destino = sa.getAeropuertoByName("Ministro Pistarini");

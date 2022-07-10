@@ -9,14 +9,19 @@ public class Estado {
 	private Vuelo solucion;
 	private Vuelo mejorSolucion;
 	private ArrayList<Aeropuerto> visitados;
+	private int cantEstados;
+	private int cantSoluciones;
 	
 	
 	public Estado(Aeropuerto origen) {
 		this.origen = origen;
 		this.actual = origen;
-		this.solucion = new Vuelo();
-		this.mejorSolucion = new Vuelo();
-		this.visitados = new ArrayList<>();
+		this.solucion = new Vuelo(origen);
+		this.mejorSolucion = null;
+		this.visitados = new ArrayList<Aeropuerto>();
+		this.visitados.add(origen);
+		this.cantEstados = 0;
+		this.cantSoluciones = 0;
 	}
 
 	public Aeropuerto getOrigen() {
@@ -30,11 +35,10 @@ public class Estado {
 	public void setActual(Aeropuerto actual) {
 		this.actual = actual;
 	}
-	
+
 	public Vuelo getMejorSolucion() {
 		return mejorSolucion;
 	}
-
 
 	public void setMejorSolucion(Vuelo mejorSolucion) {
 		this.mejorSolucion = mejorSolucion;
@@ -74,5 +78,29 @@ public class Estado {
 	
 	public boolean actualNoTieneDestinos() {
 		return this.actual.getRutasPosibles(this.visitados).isEmpty();
+	}
+
+	public boolean hayMejorSolucion() {
+		return this.solucion.getKilometros() < this.mejorSolucion.getKilometros();
+	}
+
+	public int getCantEstados() {
+		return cantEstados;
+	}
+
+	public void aumentarCantEstados() {
+		this.cantEstados++;
+	}
+	
+	public int getCantSoluciones() {
+		return cantSoluciones;
+	}
+
+	public void aumentarCantSoluciones() {
+		this.cantSoluciones++;
+	}
+
+	public boolean podaPorKilometrajeExcedido() {
+		return this.mejorSolucion != null ? this.solucion.getKilometros() > this.mejorSolucion.getKilometros() : false;
 	}
 }

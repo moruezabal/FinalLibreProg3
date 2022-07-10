@@ -460,47 +460,62 @@ public class SistemaAereo {
 	
 	private Vuelo recorridoMasCortoBacktracking(Estado e) {
 		
-		Vuelo vuelo = new Vuelo();
+		e.aumentarCantEstados();
 		  
-		 e.addVisita(e.getActual());
-		  
-		  if (e.actualNoTieneDestinos() || e.cantVisitados() == this.cantAeropuertos()) {
-			  if(e.cantVisitados() == this.cantAeropuertos()) {
-				  e.getSolucion().addAeropuerto(e.getActual().getNombre());
-			  }
-			  e.setVisitado(new ArrayList<Aeropuerto>());
-			  return e.getSolucion();
+		if(e.cantVisitados() == this.cantAeropuertos()) {
+			e.aumentarCantSoluciones();
+			System.out.println(e.getSolucion().getAeropuertos());
+			
+			Ruta regresoOrigen = e.getActual().getVueloDirecto(e.getOrigen().getNombre());
+			if(regresoOrigen != null) {
+				e.getSolucion().agregarKilometros(regresoOrigen.getDistancia());
+				e.getSolucion().addAeropuerto(e.getOrigen().getNombre());
+				
+				if(e.getMejorSolucion() == null || e.hayMejorSolucion()) {
+					Vuelo mejorSolucion = new Vuelo(e.getSolucion());
+					e.setMejorSolucion(mejorSolucion);
+				}
+				
+				e.getSolucion().restarKilometros(regresoOrigen.getDistancia());
+				e.getSolucion().removeAeropuerto(e.getOrigen().getNombre());
+			}
+			
+		}
+		else {
+			Aeropuerto actual = e.getActual();
+			ArrayList<Ruta> rutasPosibles = e.getActual().getRutasPosibles(e.getVisitados());
+			for( Ruta r: rutasPosibles) {
+				Aeropuerto siguiente = r.getDestino();
+				e.addVisita(siguiente);
+				e.setActual(siguiente);
+				e.getSolucion().addAeropuerto(siguiente.getNombre());
+				e.getSolucion().agregarKilometros(r.getDistancia());
+				
+				if(!e.podaPorKilometrajeExcedido()) {
+					this.recorridoMasCortoBacktracking(e);					
+				}
+				
+				e.removeVisita(siguiente);
+				e.setActual(actual);
+				e.getSolucion().removeAeropuerto(siguiente.getNombre());
+				e.getSolucion().restarKilometros(r.getDistancia());
+			}
 		  }
-		  else {
-//			  HashMap<Aeropuerto,String> destinosPosibles = origen.getDestinosDirectosPosiblesConAerolinea(aerolineaExcluida);
-//			  for (Map.Entry<Aeropuerto, String> siguiente : destinosPosibles.entrySet()) {		  
-//				  if(visitado.get(siguiente.getKey().getNombre()) == null ) {
-//					  ArrayList<Vuelo> caminos = encontrarVuelosSinAerolinea(visitado, siguiente.getKey(), destino, aerolineaExcluida);	
-//					  for(Vuelo camino : caminos) {
-//						  if (!camino.getAeropuertos().isEmpty()) {
-//							  Vuelo caminoCompleto = new Vuelo();
-//							  // Actualizar listado de aeropuertos
-//							  caminoCompleto.addAeropuerto(origen.getNombre());
-//							  caminoCompleto.getAeropuertos().addAll(camino.getAeropuertos());
-//							  // Actualizar listado de aerolíneas
-//							  caminoCompleto.addAerolinea(siguiente.getValue());
-//							  caminoCompleto.getAerolineas().addAll(camino.getAerolineas());
-//							  // Actualizar cantidad de escalas
-//							  caminoCompleto.setCantEscalas(camino.getCantEscalas()+1);
-//							  // Actualizar kilometraje
-//							  Ruta rutaActual = origen.getVueloDirecto(siguiente.getKey().getNombre());
-//							  caminoCompleto.setKilometros(camino.getKilometros()+ rutaActual.getDistancia());
-//							  // Agregar vuelo al listado
-//							  vuelos.add(caminoCompleto);
-//						  }  
-//					  }  
-//				  }
-//			  } 
-		  }
-			  
-	  	//visitado.remove(origen.getNombre());
-	  	return vuelo;
+		
+	  	return e.getMejorSolucion();
 	  }
+	
+	public Vuelo recorridoMasCortoBacktracking(Aeropuerto origen) {
+		
+		Estado e = new Estado(origen);
+		
+		Vuelo masCorto = recorridoMasCortoBacktracking(e);
+		
+		System.out.println("Cantidad de Estados: " + e.getCantEstados());
+		System.out.println("Cantidad de Soluciones: " + e.getCantSoluciones());
+		
+		return masCorto;
+	}
 
 	private Aeropuerto seleccionarMasCercano(ArrayList<Ruta> destinos, ArrayList<Aeropuerto> visitados) {
 		Aeropuerto elegido = null;

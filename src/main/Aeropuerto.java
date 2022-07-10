@@ -92,6 +92,13 @@ public class Aeropuerto {
 		return this.nombre + " (" + this.ciudad + ", " + this.pais + ").\n" + this.mostrarSalidas();
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		Aeropuerto a = (Aeropuerto) o;
+		return this.getNombre().equals(a.getNombre());
+	}
+	
+	
 	public ArrayList<Aeropuerto> getDestinosDirectos(){
 		ArrayList<Aeropuerto> destinos = new ArrayList<>();
 			for (Ruta r: this.getSalidas()){
