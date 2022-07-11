@@ -29,9 +29,9 @@ public class Administracion {
 	
 	public void cargarDatos() {
 
-		ArrayList<String[]> aeropuertosImportados = CSVReaderAeropuertos.read("./src/resources/5Aeropuertos.csv");
-		ArrayList<String[]> rutasImportadas = CSVReaderRutas.read("./src/resources/5Rutas.csv");
-		ArrayList<String[]> reservasImportadas = CSVReaderReservas.read("./src/resources/5Reservas.csv");
+		ArrayList<String[]> aeropuertosImportados = CSVReaderAeropuertos.read("./src/resources/Aeropuertos.csv");
+		ArrayList<String[]> rutasImportadas = CSVReaderRutas.read("./src/resources/Rutas.csv");
+		ArrayList<String[]> reservasImportadas = CSVReaderReservas.read("./src/resources/Reservas.csv");
 		
 		this.cargarAeropuertosCSV(aeropuertosImportados);
 		this.cargarRutasCSV(rutasImportadas);
